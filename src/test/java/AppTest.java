@@ -13,11 +13,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("JUnit 5")
 class AppTest {
+
+
 
     @Test
     void simpleAssertion() {
@@ -31,7 +34,9 @@ class AppTest {
         assertAll("Numbers",
                 () -> assertEquals(2, 1 + 1),
                 () -> assertTrue(5 > 1),
-                () -> assertNotNull("Hello")
+                () -> assertNotNull("Hello"),
+                () -> assertTrue( 1 > 0)
+
         );
     }
     /* --------- Exception Testing --------- */
@@ -57,6 +62,7 @@ class AppTest {
     @Test
     void assumptionsExample() {
         assumeTrue(System.getProperty("os.name").contains("Windows"));
+        assumeFalse(System.getProperty("os.name").contains("linux"));
         assertTrue(true); // runs only if assumption holds
     }
 
@@ -105,10 +111,13 @@ class AppTest {
         List<String> numbers = Files
                 .lines(Path.of("src/test/resources/test-data.txt"))
                 .collect(Collectors.toList());
-        return numbers.stream()
-                .map(n -> DynamicTest.dynamicTest(
-                        "Number > 0: " + Integer.parseInt(n),
-                        () -> assertTrue(Integer.parseInt(n) > 0)
-                ));
+
+         return numbers.stream()
+                 .map( n -> DynamicTest.dynamicTest(
+                         "Test for input: " + n,
+                         () -> assertTrue(Integer.parseInt(n) > 0)
+                 ));
+
+
     }
 }
